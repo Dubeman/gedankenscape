@@ -1,0 +1,67 @@
+.mock-ai-input-container {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mock-ai-form {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.mock-ai-input {
+  flex: 1;
+  background: #0f0f0f;
+  border: 1px solid #333;
+  color: #e0e0e0;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.mock-ai-input:focus {
+  border-color: #555;
+}
+
+.mock-ai-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mock-ai-input::placeholder {
+  color: #666;
+}
+
+.mock-ai-button {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #e0e0e0;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.mock-ai-button:hover:not(:disabled) {
+  background: #222;
+  border-color: #444;
+}
+
+.mock-ai-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mock-ai-status {
+  color: #666;
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 0.5rem;
+}
+

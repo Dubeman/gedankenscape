@@ -1,0 +1,115 @@
+.trim-tool {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.trim-overlay {
+  position: fixed;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.trim-selection {
+  position: absolute;
+  top: 1rem;
+  bottom: 1rem;
+  background: rgba(136, 136, 136, 0.2);
+  border-left: 2px solid #888;
+  border-right: 2px solid #888;
+  pointer-events: none;
+}
+
+.trim-marker {
+  position: absolute;
+  top: 1rem;
+  bottom: 1rem;
+  width: 3px;
+  background: #aaa;
+  cursor: ew-resize;
+  transform: translateX(-50%);
+  pointer-events: auto;
+  transition: background 0.2s, width 0.2s;
+}
+
+.trim-marker:hover {
+  background: #ddd;
+  width: 4px;
+}
+
+.trim-marker-start {
+  border-left: 2px solid #888;
+}
+
+.trim-marker-end {
+  border-right: 2px solid #888;
+}
+
+.trim-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  padding-top: 1rem;
+}
+
+.trim-inputs {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.trim-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.trim-input-group label {
+  color: #888;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.trim-input {
+  background: #0f0f0f;
+  border: 1px solid #333;
+  color: #e0e0e0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  width: 100px;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.trim-input:focus {
+  border-color: #555;
+}
+
+.trim-button {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #e0e0e0;
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  align-self: center;
+}
+
+.trim-button:hover:not(:disabled) {
+  background: #222;
+  border-color: #444;
+}
+
+.trim-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+

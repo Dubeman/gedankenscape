@@ -1,0 +1,26 @@
+Music Iteration Tool
+
+## Vibe
+Minimal, dark, haunted. Like Radiohead b-sides. Tool disappears, music emerges.
+
+## Tech
+- React functional components
+- Mock AI responses until UI feels right
+- WaveSurfer.js for audio
+
+## Priorities
+1. Feel over correctness
+2. Working over perfect
+3. Fast iteration over clean code
+
+## Style
+- Dark backgrounds (#0a0a0a to #1a1a1a range)
+- Subtle interactions (no flashy animations)
+- Large, touchable waveforms
+- Spacebar = play/pause always
+
+## Don't
+- Add TypeScript unless I ask
+- Refactor working code unprompted
+- Use component libraries (build minimal custom)
+
