@@ -3,6 +3,7 @@ import AudioPlayer from './components/AudioPlayer'
 import Waveform from './components/Waveform'
 import AudioEditor from './components/AudioEditor'
 import MockAIInput from './components/MockAIInput'
+import { useLiveEffects } from './hooks/useLiveEffects'
 import './App.css'
 
 function App() {
@@ -12,6 +13,10 @@ function App() {
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const waveformRef = useRef(null)
+  const wavesurferRef = useRef(null)
+  const [isReady, setIsReady] = useState(false)
+  
+  const liveEffects = useLiveEffects(wavesurferRef, isReady)
 
   const handleFileLoad = (file) => {
     if (audioUrl) {
@@ -35,6 +40,11 @@ function App() {
 
   const handleWaveformReady = (ref) => {
     waveformRef.current = ref.current
+  }
+
+  const handleWavesurferReady = (ref) => {
+    wavesurferRef.current = ref.current
+    setIsReady(true)
   }
 
   const handlePlayPause = () => {
@@ -76,6 +86,7 @@ function App() {
                 onTimeUpdate={handleTimeUpdate}
                 onDurationChange={handleDurationChange}
                 onWaveformReady={handleWaveformReady}
+                onWavesurferReady={handleWavesurferReady}
               />
               {duration > 0 && (
                 <AudioEditor
@@ -83,6 +94,7 @@ function App() {
                   duration={duration}
                   waveformRef={waveformRef}
                   onEditComplete={handleEditComplete}
+                  liveEffects={liveEffects}
                 />
               )}
             </div>

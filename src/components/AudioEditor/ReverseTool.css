@@ -1,0 +1,42 @@
+.reverse-tool {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  padding-top: 1rem;
+}
+
+.reverse-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.reverse-description {
+  color: #888;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.reverse-button {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #e0e0e0;
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.reverse-button:hover:not(:disabled) {
+  background: #222;
+  border-color: #444;
+}
+
+.reverse-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+

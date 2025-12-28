@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import WaveSurfer from 'wavesurfer.js'
 import './Waveform.css'
 
-function Waveform({ audioUrl, isPlaying, onPlayPause, onTimeUpdate, onDurationChange, onWaveformReady }) {
+function Waveform({ audioUrl, isPlaying, onPlayPause, onTimeUpdate, onDurationChange, onWaveformReady, onWavesurferReady }) {
   const waveformRef = useRef(null)
   const wavesurferRef = useRef(null)
   const [isReady, setIsReady] = useState(false)
@@ -35,6 +35,9 @@ function Waveform({ audioUrl, isPlaying, onPlayPause, onTimeUpdate, onDurationCh
       if (onWaveformReady) {
         onWaveformReady(waveformRef)
       }
+      if (onWavesurferReady) {
+        onWavesurferReady(wavesurferRef)
+      }
     })
 
     wavesurfer.on('play', () => {
@@ -42,6 +45,10 @@ function Waveform({ audioUrl, isPlaying, onPlayPause, onTimeUpdate, onDurationCh
     })
 
     wavesurfer.on('pause', () => {
+      onPlayPause(false)
+    })
+
+    wavesurfer.on('finish', () => {
       onPlayPause(false)
     })
 
