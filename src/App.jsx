@@ -49,8 +49,12 @@ function App() {
     setIsReady(true)
   }
 
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying)
+  const handlePlayPause = (newState) => {
+    if (newState !== undefined) {
+      setIsPlaying(newState)
+    } else {
+      setIsPlaying(!isPlaying)
+    }
   }
 
   const handleTimeUpdate = (time) => {

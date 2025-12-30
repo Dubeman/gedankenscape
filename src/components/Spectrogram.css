@@ -6,6 +6,34 @@
   gap: 1rem;
 }
 
+.spectrogram-mode-toggle {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.spectrogram-mode-button {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #888;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.spectrogram-mode-button:hover {
+  background: #222;
+  border-color: #444;
+}
+
+.spectrogram-mode-button.active {
+  background: #0f0f0f;
+  border-color: #555;
+  color: #e0e0e0;
+}
+
 .spectrogram-wrapper {
   width: 100%;
   background: #0f0f0f;

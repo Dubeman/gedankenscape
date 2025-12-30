@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createMelFilterBank, applyMelFilterBank, normalizeMelData } from '../utils/melSpectrogram'
 import './Spectrogram.css'
 
 function Spectrogram({ audioUrl, isPlaying, onPlayPause, onTimeUpdate, onDurationChange, onSpectrogramReady }) {
@@ -11,6 +12,9 @@ function Spectrogram({ audioUrl, isPlaying, onPlayPause, onTimeUpdate, onDuratio
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [viewMode, setViewMode] = useState('spectrogram') // 'spectrogram' or 'waveform' (internal to component)
+  const [spectrogramMode, setSpectrogramMode] = useState('mel') // 'mel' or 'linear'
+  const melFilterBankRef = useRef(null)
+  const audioContextRef = useRef(null)
 
   useEffect(() => {
     if (!audioUrl) return
@@ -29,6 +33,12 @@ function Spectrogram({ audioUrl, isPlaying, onPlayPause, onTimeUpdate, onDuratio
 
     audioRef.current = audio
     analyserRef.current = analyser
+    audioContextRef.current = audioContext
+
+    // Create mel filter bank once
+    const sampleRate = audioContext.sampleRate
+    const nMelBins = 80
+    melFilterBankRef.current = createMelFilterBank(analyser.fftSize, sampleRate, nMelBins)
 
     audio.addEventListener('loadedmetadata', () => {
       setDuration(audio.duration)
@@ -98,9 +108,14 @@ function Spectrogram({ audioUrl, isPlaying, onPlayPause, onTimeUpdate, onDuratio
     const spectrogramData = []
     const maxHistory = 300 // Store enough history for smooth scrolling
 
+    // Determine number of bins based on mode
+    const nBins = spectrogramMode === 'mel' && melFilterBankRef.current
+      ? melFilterBankRef.current.length
+      : bufferLength
+
     const draw = () => {
       if (viewMode === 'spectrogram') {
-        drawSpectrogram(ctx, canvas, analyser, dataArray, spectrogramData, maxHistory, bufferLength)
+        drawSpectrogram(ctx, canvas, analyser, dataArray, spectrogramData, maxHistory, bufferLength, nBins)
       } else {
         drawWaveform(ctx, canvas, analyser, timeDataArray)
       }
@@ -115,14 +130,23 @@ function Spectrogram({ audioUrl, isPlaying, onPlayPause, onTimeUpdate, onDuratio
         cancelAnimationFrame(animationFrameRef.current)
       }
     }
-  }, [isReady, viewMode, isPlaying, currentTime])
+  }, [isReady, viewMode, spectrogramMode, isPlaying, currentTime])
 
-  const drawSpectrogram = (ctx, canvas, analyser, dataArray, spectrogramData, maxHistory, bufferLength) => {
+  const drawSpectrogram = (ctx, canvas, analyser, dataArray, spectrogramData, maxHistory, bufferLength, nBins) => {
     analyser.getByteFrequencyData(dataArray)
+
+    // Convert to mel-scale if enabled
+    let processedData
+    if (spectrogramMode === 'mel' && melFilterBankRef.current) {
+      const melData = applyMelFilterBank(dataArray, melFilterBankRef.current)
+      processedData = normalizeMelData(melData)
+    } else {
+      processedData = dataArray
+    }
 
     // Add current frequency data to history (only when playing or every few frames)
     if (isPlaying || spectrogramData.length === 0) {
-      spectrogramData.push(new Uint8Array(dataArray))
+      spectrogramData.push(new Uint8Array(processedData))
     }
 
     // Keep only recent history
@@ -138,14 +162,17 @@ function Spectrogram({ audioUrl, isPlaying, onPlayPause, onTimeUpdate, onDuratio
 
     // Draw spectrogram - map frequency bins to canvas height
     const columnWidth = canvas.width / spectrogramData.length
-    const binHeight = canvas.height / bufferLength
+    const binHeight = canvas.height / nBins
 
     for (let i = 0; i < spectrogramData.length; i++) {
       const x = i * columnWidth
       const frame = spectrogramData[i]
 
-      // Only draw every few bins to improve performance
-      const binStep = Math.max(1, Math.floor(bufferLength / 200))
+      // For mel spectrogram, we have fewer bins so we can draw all of them
+      // For linear, we still sample for performance
+      const binStep = spectrogramMode === 'mel' 
+        ? 1 
+        : Math.max(1, Math.floor(nBins / 200))
 
       for (let j = 0; j < frame.length; j += binStep) {
         const value = frame[j]
@@ -237,6 +264,22 @@ function Spectrogram({ audioUrl, isPlaying, onPlayPause, onTimeUpdate, onDuratio
 
   return (
     <div className="spectrogram-container">
+      {viewMode === 'spectrogram' && (
+        <div className="spectrogram-mode-toggle">
+          <button
+            className={`spectrogram-mode-button ${spectrogramMode === 'mel' ? 'active' : ''}`}
+            onClick={() => setSpectrogramMode('mel')}
+          >
+            Mel
+          </button>
+          <button
+            className={`spectrogram-mode-button ${spectrogramMode === 'linear' ? 'active' : ''}`}
+            onClick={() => setSpectrogramMode('linear')}
+          >
+            Linear
+          </button>
+        </div>
+      )}
       <div className="spectrogram-wrapper" ref={containerRef}>
         <canvas
           ref={canvasRef}

@@ -98,7 +98,17 @@ export function useLiveEffects(wavesurferRef, isReady) {
             if (pannerNode.isConnected) {
               pannerNode.disconnect()
             }
-          } catch (e) {}
+            // Also disconnect source from gainNode to fully stop audio
+            if (currentSource && gainNode) {
+              try {
+                currentSource.disconnect(gainNode)
+              } catch (e) {
+                // Source might already be disconnected
+              }
+            }
+          } catch (e) {
+            // Ignore cleanup errors
+          }
         }
         
         wavesurfer.on('pause', handlePause)
