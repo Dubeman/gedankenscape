@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import AudioPlayer from './components/AudioPlayer'
 import Waveform from './components/Waveform'
+import Spectrogram from './components/Spectrogram'
 import AudioEditor from './components/AudioEditor'
 import MockAIInput from './components/MockAIInput'
 import { useLiveEffects } from './hooks/useLiveEffects'
@@ -15,6 +16,7 @@ function App() {
   const waveformRef = useRef(null)
   const wavesurferRef = useRef(null)
   const [isReady, setIsReady] = useState(false)
+  const [viewMode, setViewMode] = useState('waveform') // 'waveform' or 'spectrogram'
   
   const liveEffects = useLiveEffects(wavesurferRef, isReady)
 
@@ -79,15 +81,40 @@ function App() {
         ) : (
           <>
             <div className="audio-section">
-              <Waveform
-                audioUrl={audioUrl}
-                isPlaying={isPlaying}
-                onPlayPause={handlePlayPause}
-                onTimeUpdate={handleTimeUpdate}
-                onDurationChange={handleDurationChange}
-                onWaveformReady={handleWaveformReady}
-                onWavesurferReady={handleWavesurferReady}
-              />
+              <div className="view-mode-toggle">
+                <button
+                  className={`view-toggle-button ${viewMode === 'waveform' ? 'active' : ''}`}
+                  onClick={() => setViewMode('waveform')}
+                >
+                  Waveform
+                </button>
+                <button
+                  className={`view-toggle-button ${viewMode === 'spectrogram' ? 'active' : ''}`}
+                  onClick={() => setViewMode('spectrogram')}
+                >
+                  Spectrogram
+                </button>
+              </div>
+              {viewMode === 'waveform' ? (
+                <Waveform
+                  audioUrl={audioUrl}
+                  isPlaying={isPlaying}
+                  onPlayPause={handlePlayPause}
+                  onTimeUpdate={handleTimeUpdate}
+                  onDurationChange={handleDurationChange}
+                  onWaveformReady={handleWaveformReady}
+                  onWavesurferReady={handleWavesurferReady}
+                />
+              ) : (
+                <Spectrogram
+                  audioUrl={audioUrl}
+                  isPlaying={isPlaying}
+                  onPlayPause={handlePlayPause}
+                  onTimeUpdate={handleTimeUpdate}
+                  onDurationChange={handleDurationChange}
+                  onSpectrogramReady={handleWaveformReady}
+                />
+              )}
               {duration > 0 && (
                 <AudioEditor
                   audioUrl={audioUrl}
